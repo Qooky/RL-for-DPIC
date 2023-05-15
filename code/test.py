@@ -21,7 +21,7 @@ def log(log_message):
     
     # open the log file and make sure that it's closed properly at the end of the 
     # block, even if an exception occurs:
-    with open("/Users/stevensusanto/Desktop/math516/log.txt", "a") as log_file:
+    with open("/Users/stevensusanto/Desktop/RL-for-DPIC/log.txt", "a") as log_file:
         # write the log message to logfile:
         log_file.write(log_message)
         log_file.write("\n") # (so the next message is put on a new line)
@@ -74,7 +74,7 @@ for i_episode in range(160):
     state = env.reset()
     action = get_action(state, w)
     for t in range(100000):
-        env.render()
+        #env.render()
         action = get_action(state, w)
         observation, reward, done, info = env.step(action)
         # update w
@@ -93,7 +93,6 @@ for i_episode in range(160):
 
 plt.plot(timesteps)
 log(str(timesteps))
-log(str(w))
 plt.show()
 
 #[-6.46, -7.89, -8.74, -30.85, -30.07, -5.055,- 33.34, 23.09, 72.94, -38.84, 1.77, -55.54]
