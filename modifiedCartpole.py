@@ -1,10 +1,10 @@
-
 import math
 import gym
 from gym import spaces, logger
 from gym.utils import seeding
 from scipy.integrate import ode
 import numpy as np
+import pygame
 
 sin = np.sin
 cos = np.cos
@@ -15,6 +15,7 @@ class CartPoleEnv(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 50}
 
     def __init__(self):
+        print('initializing')
         self.g = 9.81 # gravity constant
         self.m0 = 1.0 # mass of cart
         self.m1 = 0.5 # mass of pole 1
@@ -45,6 +46,29 @@ class CartPoleEnv(gym.Env):
         self.steps_beyond_terminated = None
 
         self.viewer = None
+        """
+        observations:
+        1. cart position
+        2. pendulum 1 angle
+        3. pendulum 2 angle
+        4.  cart velocity
+        5.  pendulum 1 angular velocity
+        6   pendulum 2 angular velocity
+
+        """
+        high = np.array(
+            [
+                self.x_threshold * 2,
+                self.theta_threshold_radians * 2,
+                self.theta_threshold_radians * 2,
+                np.finfo(np.float32).max,
+                np.finfo(np.float32).max,
+                np.finfo(np.float32).max
+            ],
+            dtype=np.float32,
+        )
+        self.action_space = spaces.Discrete(2)
+        self.observation_space = spaces.Box(-high, high,)
 
         # Initialize the relevant attributes
         self._configure()
@@ -245,3 +269,38 @@ def normalize_angle(angle):
         normalized_angle = normalized_angle - 2*np.pi
     normalized_angle = abs(normalized_angle)
     return normalized_angle
+
+def main():
+    env = CartPoleEnv()
+    def some_random_games_first():
+    # Each of these is its own game.
+        for episode in range(5):
+            env.reset()
+            # this is each frame, up to 200...but we wont make it that far.
+            for t in range(800):
+                # This will display the environment
+                # Only display if you really want to see it.
+                # Takes much longer to display it.
+                env.render()
+    
+                # This will just create a sample action in any environment.
+                # In this environment, the action can be 0 or 1, which is left or right
+                action = env.action_space.sample()
+    
+                # this executes the environment with an action,
+                # and returns the observation of the environment,
+                # the reward, if the env is over, and other info.
+                state, reward, done, info = env.step(action)
+                env.step(action)
+
+                if done:
+                    break
+
+    some_random_games_first()
+
+def q_learning(number_of_states: int=6, number_of_actions: int=2):
+    
+    return
+
+if __name__ == "__main__":
+    main()
